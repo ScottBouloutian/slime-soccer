@@ -1,0 +1,19 @@
+{
+  "name": "slime-soccer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:ScottBouloutian/slime-soccer.git",
+  "author": "Scott Bouloutian <ScottBouloutian@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "dependencies": {
+    "phaser-ce": "^2.9.2"
+  },
+  "devDependencies": {
+    "expose-loader": "^0.7.4",
+    "webpack": "^3.9.1",
+    "webpack-dev-server": "^2.9.5"
+  }
+}
