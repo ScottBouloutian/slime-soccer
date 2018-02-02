@@ -1,0 +1,10 @@
+{
+  "name": "slime-soccer-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "phantomjs-prebuilt": "^2.1.16",
+    "phaser-ce": "^2.10.0"
+  }
+}

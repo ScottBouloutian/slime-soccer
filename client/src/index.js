@@ -7,7 +7,7 @@ const worldWidth = 560;
 const worldPadding = 20;
 const jumpHeight = 60;
 const slimeHeight = 28;
-const game = new Phaser.Game(worldWidth, worldHeight, Phaser.AUTO, 'slime-soccer', {
+const game = new Phaser.Game(worldWidth, worldHeight, Phaser.HEADLESS, 'slime-soccer', {
     create: create,
     preload: preload,
     update: update,
@@ -35,31 +35,29 @@ function create() {
     slime = game.add.sprite(worldPadding, worldHeight - worldPadding - slimeHeight, 'slime');
     game.physics.box2d.enable(slime);
     slime.body.fixedRotation = true;
-    slime.body.linearDamping = 3;
+    slime.body.linearDamping = 2.5;
 }
 
 function update() {
     const distanceFromGround = worldHeight - slime.y - worldPadding - slimeHeight;
 
     // Jumping
-    if (distanceFromGround > jumpHeight) {
-        slime.body.gravityScale = 42.2;
-        slime.body.moveDown(12.79366667);
-    }
     if (cursors.up.isDown && distanceFromGround < 8) {
-        slime.body.gravityScale = 321.4166667;
-        slime.body.moveUp(273.12);
+        slime.body.gravityScale = 320;
+        slime.body.moveUp(275);
     }
 
     // Moving left
-    if (cursors.left.isDown && slime.body.velocity.x > -160) {
-        slime.body.velocity.x = slime.body.velocity.x - 16;
+    if (cursors.left.isDown) {
+        slime.body.moveLeft(160);
     }
 
-    // Movign Right
-    if (cursors.right.isDown && slime.body.velocity.x < 160) {
-        slime.body.velocity.x = slime.body.velocity.x + 16;
+    // Moving Right
+    if (cursors.right.isDown) {
+        slime.body.moveRight(160);
     }
 
     game.debug.box2dWorld();
 }
+
+console.log('hello world!');
