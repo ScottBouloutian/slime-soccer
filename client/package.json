@@ -10,7 +10,8 @@
     "build": "webpack"
   },
   "dependencies": {
-    "phaser-ce": "^2.9.2"
+    "phaser-ce": "^2.9.2",
+    "socket.io-client": "^2.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.39",

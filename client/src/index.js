@@ -1,12 +1,14 @@
 import PIXI from 'expose-loader?PIXI!phaser-ce/build/custom/pixi.js';
 import p2 from 'expose-loader?p2!phaser-ce/build/custom/p2.js';
 import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js';
+import io from 'socket.io-client';
 
 const worldHeight = 400;
 const worldWidth = 560;
 const worldPadding = 20;
 const jumpHeight = 60;
 const slimeHeight = 28;
+const socket = io('http://localhost:3000');
 const phantom = /PhantomJS/.test(window.navigator.userAgent);
 const renderingMode = Phaser[phantom ? 'HEADLESS' : 'AUTO'];
 const game = new Phaser.Game(worldWidth, worldHeight, renderingMode, 'slime-soccer', {
@@ -37,11 +39,35 @@ function create() {
     slime = game.add.sprite(worldPadding, worldHeight - worldPadding - slimeHeight, 'slime');
     game.physics.box2d.enable(slime);
     slime.body.fixedRotation = true;
+    slime.body.gravityScale = 320;
     slime.body.linearDamping = 2.5;
 
-    window.getPhysicsState = () => {
-        return slime.body.velocity.y;
-    };
+    if (phantom) {
+        // Handle direction from client
+        socket.on('moveSlime', direction => {
+            switch (direction) {
+            case 'up':
+                slime.body.moveUp(275);
+                break;
+            case 'left':
+                slime.body.moveLeft(160);
+                break;
+            case 'right':
+                slime.body.moveRight(160);
+                break;
+            default:
+        }
+        });
+
+        // Regularly send physics updates to client
+        setInterval(() => {
+            socket.emit('physics', slime.body.velocity.y)
+        }, 1000 / 30);
+    } else {
+        socket.on('physics', physics => {
+            slime.body.velocity.y = physics;
+        });
+    }
 }
 
 function update() {
@@ -49,18 +75,17 @@ function update() {
 
     // Jumping
     if (cursors.up.isDown && distanceFromGround < 8) {
-        slime.body.gravityScale = 320;
-        slime.body.moveUp(275);
+        socket.emit('moveSlime', 'up');
     }
 
     // Moving left
     if (cursors.left.isDown) {
-        slime.body.moveLeft(160);
+        socket.emit('moveSlime', 'left');
     }
 
     // Moving Right
     if (cursors.right.isDown) {
-        slime.body.moveRight(160);
+        socket.emit('moveSlime', 'right');
     }
 
     game.debug.box2dWorld();

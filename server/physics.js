@@ -1,18 +1,18 @@
+// This script is run by PhantomJS and does not support ES6, probably not worth transpiling
 var page = require('webpage').create();
-console.log('The default user agent is ' + page.settings.userAgent);
-page.settings.userAgent = 'SpecialAgent';
+var system = require('system');
+var framerate = 30;
+
 page.onConsoleMessage = function (msg) {
   console.log(msg);
 };
-page.open('file:///home/scott/Documents/slime-soccer/client/public/index.html', function(status) {
+page.onError = function (msg) {
+    console.log(msg);
+};
+page.open('http://localhost:3000', function (status) {
   if (status !== 'success') {
-    console.log('Unable to access network');
+    console.log('Unable to access file');
   } else {
-      setInterval(function () {
-          const physics = page.evaluate(function () {
-              return window.getPhysicsState ? window.getPhysicsState() : null;
-          });
-          console.log(physics);
-      }, 1000);
+      console.log('Started the physics engine');
   }
 });
