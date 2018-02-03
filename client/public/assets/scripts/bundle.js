@@ -92,80 +92,79 @@ module.exports = g;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_expose_loader_PIXI_phaser_ce_build_custom_pixi_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_expose_loader_PIXI_phaser_ce_build_custom_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_expose_loader_PIXI_phaser_ce_build_custom_pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_expose_loader_p2_phaser_ce_build_custom_p2_js__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_expose_loader_p2_phaser_ce_build_custom_p2_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_expose_loader_p2_phaser_ce_build_custom_p2_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_expose_loader_Phaser_phaser_ce_build_custom_phaser_split_js__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_expose_loader_Phaser_phaser_ce_build_custom_phaser_split_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_expose_loader_Phaser_phaser_ce_build_custom_phaser_split_js__);
 
 
+var _pixi = _interopRequireDefault(__webpack_require__(2));
 
+var _p = _interopRequireDefault(__webpack_require__(4));
 
-const worldHeight = 400;
-const worldWidth = 560;
-const worldPadding = 20;
-const jumpHeight = 60;
-const slimeHeight = 28;
-const game = new __WEBPACK_IMPORTED_MODULE_2_expose_loader_Phaser_phaser_ce_build_custom_phaser_split_js___default.a.Game(worldWidth, worldHeight, __WEBPACK_IMPORTED_MODULE_2_expose_loader_Phaser_phaser_ce_build_custom_phaser_split_js___default.a.AUTO, 'slime-soccer', {
-    create: create,
-    preload: preload,
-    update: update,
+var _phaserSplit = _interopRequireDefault(__webpack_require__(6));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var worldHeight = 400;
+var worldWidth = 560;
+var worldPadding = 20;
+var jumpHeight = 60;
+var slimeHeight = 28;
+var phantom = /PhantomJS/.test(window.navigator.userAgent);
+var renderingMode = _phaserSplit.default[phantom ? 'HEADLESS' : 'AUTO'];
+var game = new _phaserSplit.default.Game(worldWidth, worldHeight, renderingMode, 'slime-soccer', {
+  create: create,
+  preload: preload,
+  update: update
 });
-
 var slime = null;
 var cursors = null;
 
 function preload() {
-    game.load.image('background', './assets/images/background.png');
-    game.load.image('slime', './assets/images/slime.png');
+  game.load.image('background', './assets/images/background.png');
+  game.load.image('slime', './assets/images/slime.png');
 }
 
 function create() {
-    game.physics.startSystem(__WEBPACK_IMPORTED_MODULE_2_expose_loader_Phaser_phaser_ce_build_custom_phaser_split_js___default.a.Physics.BOX2D);
-    game.physics.box2d.gravity.y = 1;
-    cursors = game.input.keyboard.createCursorKeys();
+  game.physics.startSystem(_phaserSplit.default.Physics.BOX2D);
+  game.physics.box2d.gravity.y = 1;
+  cursors = game.input.keyboard.createCursorKeys(); // Add the background to the world
 
-    // Add the background to the world
-    game.world.setBounds(-worldPadding, -worldPadding, worldWidth - 2 * worldPadding, worldHeight - 2 * worldPadding);
-    game.physics.box2d.setBoundsToWorld();
-    game.add.image(-worldPadding, -worldPadding, 'background');
+  game.world.setBounds(-worldPadding, -worldPadding, worldWidth - 2 * worldPadding, worldHeight - 2 * worldPadding);
+  game.physics.box2d.setBoundsToWorld();
+  game.add.image(-worldPadding, -worldPadding, 'background'); // Add the slime to the world
 
-    // Add the slime to the world
-    slime = game.add.sprite(worldPadding, worldHeight - worldPadding - slimeHeight, 'slime');
-    game.physics.box2d.enable(slime);
-    slime.body.fixedRotation = true;
-    slime.body.linearDamping = 2.5;
+  slime = game.add.sprite(worldPadding, worldHeight - worldPadding - slimeHeight, 'slime');
+  game.physics.box2d.enable(slime);
+  slime.body.fixedRotation = true;
+  slime.body.linearDamping = 2.5;
+
+  window.getPhysicsState = function () {
+    return slime.body.velocity.y;
+  };
 }
 
 function update() {
-    const distanceFromGround = worldHeight - slime.y - worldPadding - slimeHeight;
+  var distanceFromGround = worldHeight - slime.y - worldPadding - slimeHeight;
+  slime.body.moveUp(1); // Jumping
 
-    // Jumping
-    if (cursors.up.isDown && distanceFromGround < 8) {
-        slime.body.gravityScale = 320;
-        slime.body.moveUp(275);
-    }
+  if (cursors.up.isDown && distanceFromGround < 8) {
+    slime.body.gravityScale = 320;
+    slime.body.moveUp(275);
+  } // Moving left
 
-    // Moving left
-    if (cursors.left.isDown) {
-        slime.body.moveLeft(160);
-    }
 
-    // Moving Right
-    if (cursors.right.isDown) {
-        slime.body.moveRight(160);
-    }
+  if (cursors.left.isDown) {
+    slime.body.moveLeft(160);
+  } // Moving Right
 
-    game.debug.box2dWorld();
+
+  if (cursors.right.isDown) {
+    slime.body.moveRight(160);
+  }
+
+  game.debug.box2dWorld();
 }
-
-console.log('hello world!');
-
 
 /***/ }),
 /* 2 */

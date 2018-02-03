@@ -7,7 +7,9 @@ const worldWidth = 560;
 const worldPadding = 20;
 const jumpHeight = 60;
 const slimeHeight = 28;
-const game = new Phaser.Game(worldWidth, worldHeight, Phaser.HEADLESS, 'slime-soccer', {
+const phantom = /PhantomJS/.test(window.navigator.userAgent);
+const renderingMode = Phaser[phantom ? 'HEADLESS' : 'AUTO'];
+const game = new Phaser.Game(worldWidth, worldHeight, renderingMode, 'slime-soccer', {
     create: create,
     preload: preload,
     update: update,
@@ -36,6 +38,10 @@ function create() {
     game.physics.box2d.enable(slime);
     slime.body.fixedRotation = true;
     slime.body.linearDamping = 2.5;
+
+    window.getPhysicsState = () => {
+        return slime.body.velocity.y;
+    };
 }
 
 function update() {
@@ -59,5 +65,3 @@ function update() {
 
     game.debug.box2dWorld();
 }
-
-console.log('hello world!');

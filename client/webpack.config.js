@@ -6,7 +6,6 @@ module.exports = {
    * Minimal build setup.
    * Create your app bundle.
    */
-
   entry: './src/index.js',
   output: {
     filename: 'bundle.js',
@@ -23,6 +22,21 @@ module.exports = {
     publicPath: '/assets/scripts/',
     contentBase: path.join(__dirname, 'public'),
     port: 3000
-  }
+  },
 
+    // Custom configuration
+    module: {
+        rules: [
+            {
+                exclude: /node_modules/,
+                test: /\.js$/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env'],
+                    },
+                },
+            },
+        ],
+    },
 };
