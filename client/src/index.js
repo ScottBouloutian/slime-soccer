@@ -55,17 +55,29 @@ function create() {
             case 'right':
                 slime.body.moveRight(160);
                 break;
-            default:
-        }
+            }
         });
 
         // Regularly send physics updates to client
         setInterval(() => {
-            socket.emit('physics', slime.body.velocity.y)
+            socket.emit('physics', {
+                position: {
+                    x: slime.body.x,
+                    y: slime.body.y,
+                },
+                velocity: {
+                    x: slime.body.velocity.x,
+                    y: slime.body.velocity.y,
+                },
+            })
         }, 1000 / 30);
     } else {
+        // Handle physics updates
         socket.on('physics', physics => {
-            slime.body.velocity.y = physics;
+            slime.body.x = physics.position.x;
+            slime.body.y = physics.position.y;
+            slime.body.velocity.x = physics.velocity.x;
+            slime.body.velocity.y = physics.velocity.y;
         });
     }
 }
