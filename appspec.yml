@@ -14,6 +14,9 @@ hooks:
   ApplicationStop:
     - location: ./hooks/applicationStop.sh
       timeout: 60
+  BeforeInstall:
+    - location: ./hooks/beforeInstall.sh
+      timeout: 300
   AfterInstall:
     - location: ./hooks/afterInstall.sh
       timeout: 300
