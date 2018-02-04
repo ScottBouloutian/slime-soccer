@@ -14,15 +14,16 @@ hooks:
   ApplicationStop:
     - location: ./hooks/applicationStop.sh
       timeout: 60
-  BeforeInstall:
-    - location: ./hooks/beforeInstall.sh
-      timeout: 300
+      runas: root
   AfterInstall:
     - location: ./hooks/afterInstall.sh
       timeout: 300
+      runas: root
   ApplicationStart:
     - location: ./hooks/applicationStart.sh
       timeout: 60
+      runas: root
   ValidateService:
     - location: ./hooks validateService.sh
       timeout: 60
+      runas: root

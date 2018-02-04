@@ -1,17 +1,19 @@
 #!/bin/bash
+cd /webapps/slime-soccer
 
-# Use the correct version of Node
+# Use correct version of Node
+. ~/.nvm/nvm.sh
 nvm use
 
-# Install client dependencies and build
+# Install client dependencies
 (
-    cd ./client
-    yarn
-    yarn build
+    cd client
+    npm install
+    npm run build
 )
 
 # Install server dependencies
 (
-    cd ./server
-    yarn --production
+    cd server
+    npm install
 )
