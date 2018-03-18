@@ -1,6 +1,6 @@
 const express = require('express');
 const http = require('http');
-const socket = require('socket.io');
+const websocket = require('socket.io');
 const phantomjs = require('phantomjs-prebuilt');
 const path = require('path');
 const fs = require('fs');
@@ -8,7 +8,7 @@ const process = require('process');
 
 const app = express();
 const server = http.Server(app);
-const io = socket(server);
+const io = websocket(server);
 
 // Write a pid file
 const pidPath = path.join(__dirname, '../app.pid');
@@ -24,23 +24,17 @@ program.stdout.pipe(process.stdout);
 program.stderr.pipe(process.stderr);
 
 // Handle socket events
-io.on('connection', socket => {
-    console.log('user connected');
-    socket.on('moveSlime', direction => {
+io.on('connection', (socket) => {
+    socket.on('moveSlime', (direction) => {
         io.emit('moveSlime', direction);
     });
-    socket.on('physics', physics => {
+    socket.on('physics', (physics) => {
         io.emit('physics', physics);
-    });
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
     });
 });
 
 // Start the server
-server.listen(3000, () => {
-    console.log('listening on port 3000');
-});
+server.listen(3000);
 
 // Exit the application
 process.on('SIGINT', () => {

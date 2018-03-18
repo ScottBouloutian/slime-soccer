@@ -10,6 +10,7 @@
     "build": "webpack"
   },
   "dependencies": {
+    "lodash": "^4.17.5",
     "phaser-ce": "^2.9.2",
     "socket.io-client": "^2.0.4"
   },

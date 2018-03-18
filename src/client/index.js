@@ -1,25 +1,18 @@
-import PIXI from 'expose-loader?PIXI!phaser-ce/build/custom/pixi.js';
-import p2 from 'expose-loader?p2!phaser-ce/build/custom/p2.js';
-import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js';
 import io from 'socket.io-client';
+import * as _ from 'lodash';
 
 const worldHeight = 400;
 const worldWidth = 560;
 const worldPadding = 20;
-const jumpHeight = 60;
 const slimeHeight = 28;
 const ballSize = 19;
 const socket = io();
 const phantom = /PhantomJS/.test(window.navigator.userAgent);
-const renderingMode = Phaser[phantom ? 'HEADLESS' : 'AUTO'];
-const game = new Phaser.Game(worldWidth, worldHeight, renderingMode, 'slime-soccer', {
-    create: create,
-    preload: preload,
-    update: update,
-});
+const renderingMode = window.Phaser[phantom ? 'HEADLESS' : 'AUTO'];
 
-var slime = null;
-var cursors = null;
+let game = null;
+let slime = null;
+let cursors = null;
 
 function getPhysicsInfo(body) {
     return {
@@ -34,11 +27,15 @@ function getPhysicsInfo(body) {
     };
 }
 
-function setPhysicsInfo(body, physics) {
-    body.x = physics.position.x;
-    body.y = physics.position.y;
-    body.velocity.x = physics.velocity.x;
-    body.velocity.y = physics.velocity.y;
+function mapPhysicsInfo(physics) {
+    return {
+        x: physics.position.x,
+        y: physics.position.y,
+        velocity: {
+            x: physics.velocity.x,
+            y: physics.velocity.y,
+        },
+    };
 }
 
 function preload() {
@@ -48,12 +45,17 @@ function preload() {
 }
 
 function create() {
-    game.physics.startSystem(Phaser.Physics.BOX2D);
+    game.physics.startSystem(window.Phaser.Physics.BOX2D);
     game.physics.box2d.gravity.y = 1;
     cursors = game.input.keyboard.createCursorKeys();
 
     // Add the background to the world
-    game.world.setBounds(-worldPadding, -worldPadding, worldWidth - 2 * worldPadding, worldHeight - 2 * worldPadding);
+    game.world.setBounds(
+        -worldPadding,
+        -worldPadding,
+        worldWidth - (2 * worldPadding),
+        worldHeight - (2 * worldPadding),
+    );
     game.physics.box2d.setBoundsToWorld();
     game.add.image(-worldPadding, -worldPadding, 'background');
 
@@ -69,16 +71,11 @@ function create() {
     game.physics.box2d.enable(ball);
     ball.body.setCircle(ball.width / 2);
     ball.body.gravityScale = 320;
-    ball.body.restitution = .85;
-
-    // testing ball-slime mechanics
-    // slime.body.setBodyPresolveCallback(ball, (body1, body2, fixture1, fixture2, contact, manifold) => {
-    //     contact.setEnabled(false);
-    // });
+    ball.body.restitution = 0.85;
 
     if (phantom) {
         // Handle direction from client
-        socket.on('moveSlime', direction => {
+        socket.on('moveSlime', (direction) => {
             switch (direction) {
             case 'up':
                 slime.body.moveUp(275);
@@ -89,21 +86,22 @@ function create() {
             case 'right':
                 slime.body.moveRight(160);
                 break;
+            default:
             }
         });
 
         // Regularly send physics updates to client
-        setInterval(() => {
+        setInterval(() => (
             socket.emit('physics', {
                 slime: getPhysicsInfo(slime.body),
                 ball: getPhysicsInfo(ball.body),
             })
-        }, 1000 / 30);
+        ), 1000 / 30);
     } else {
         // Handle physics updates
         socket.on('physics', (physics) => {
-            setPhysicsInfo(slime.body, physics.slime);
-            setPhysicsInfo(ball.body, physics.ball);
+            _.assign(slime.body, mapPhysicsInfo(physics.slime));
+            _.assign(ball.body, mapPhysicsInfo(physics.ball));
         });
     }
 }
@@ -128,3 +126,9 @@ function update() {
 
     game.debug.box2dWorld();
 }
+
+game = new window.Phaser.Game(worldWidth, worldHeight, renderingMode, 'slime-soccer', {
+    create,
+    preload,
+    update,
+});
