@@ -1,0 +1,24 @@
+{
+  "name": "slime-soccer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ScottBouloutian/slime-soccer.git"
+  },
+  "author": "Scott Bouloutian",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ScottBouloutian/slime-soccer/issues"
+  },
+  "homepage": "https://github.com/ScottBouloutian/slime-soccer#readme",
+  "devDependencies": {
+    "eslint": "^4.19.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0"
+  }
+}

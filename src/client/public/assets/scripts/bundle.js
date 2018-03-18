@@ -3541,6 +3541,7 @@ var worldWidth = 560;
 var worldPadding = 20;
 var jumpHeight = 60;
 var slimeHeight = 28;
+var ballSize = 19;
 var socket = (0, _socket.default)();
 var phantom = /PhantomJS/.test(window.navigator.userAgent);
 var renderingMode = _phaserSplit.default[phantom ? 'HEADLESS' : 'AUTO'];
@@ -3552,9 +3553,30 @@ var game = new _phaserSplit.default.Game(worldWidth, worldHeight, renderingMode,
 var slime = null;
 var cursors = null;
 
+function getPhysicsInfo(body) {
+  return {
+    position: {
+      x: body.x,
+      y: body.y
+    },
+    velocity: {
+      x: body.velocity.x,
+      y: body.velocity.y
+    }
+  };
+}
+
+function setPhysicsInfo(body, physics) {
+  body.x = physics.position.x;
+  body.y = physics.position.y;
+  body.velocity.x = physics.velocity.x;
+  body.velocity.y = physics.velocity.y;
+}
+
 function preload() {
   game.load.image('background', './assets/images/background.png');
   game.load.image('slime', './assets/images/slime.png');
+  game.load.image('ball', './assets/images/ball.png');
 }
 
 function create() {
@@ -3570,7 +3592,16 @@ function create() {
   game.physics.box2d.enable(slime);
   slime.body.fixedRotation = true;
   slime.body.gravityScale = 320;
-  slime.body.linearDamping = 2.5;
+  slime.body.linearDamping = 2.5; // Add the ball to the world
+
+  var ball = game.add.sprite((worldWidth - ballSize) / 2, (worldHeight - ballSize) / 2, 'ball');
+  game.physics.box2d.enable(ball);
+  ball.body.setCircle(ball.width / 2);
+  ball.body.gravityScale = 320;
+  ball.body.restitution = .85; // testing ball-slime mechanics
+  // slime.body.setBodyPresolveCallback(ball, (body1, body2, fixture1, fixture2, contact, manifold) => {
+  //     contact.setEnabled(false);
+  // });
 
   if (phantom) {
     // Handle direction from client
@@ -3592,23 +3623,15 @@ function create() {
 
     setInterval(function () {
       socket.emit('physics', {
-        position: {
-          x: slime.body.x,
-          y: slime.body.y
-        },
-        velocity: {
-          x: slime.body.velocity.x,
-          y: slime.body.velocity.y
-        }
+        slime: getPhysicsInfo(slime.body),
+        ball: getPhysicsInfo(ball.body)
       });
     }, 1000 / 30);
   } else {
     // Handle physics updates
     socket.on('physics', function (physics) {
-      slime.body.x = physics.position.x;
-      slime.body.y = physics.position.y;
-      slime.body.velocity.x = physics.velocity.x;
-      slime.body.velocity.y = physics.velocity.y;
+      setPhysicsInfo(slime.body, physics.slime);
+      setPhysicsInfo(ball.body, physics.ball);
     });
   }
 }
