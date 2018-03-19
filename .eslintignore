@@ -1,0 +1,7 @@
+# Client
+src/client/node_modules/*
+src/client/public/*
+
+# Server
+src/server/node_modules/*
+src/server/physics.js
