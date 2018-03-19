@@ -1,12 +1,11 @@
 const path = require('path');
 
 module.exports = {
-
     /**
     * Minimal build setup.
     * Create your app bundle.
     */
-    entry: './src/index.js',
+    entry: './index.js',
     output: {
         filename: 'bundle.js',
         path: path.join(__dirname, 'public', 'assets', 'scripts'),
@@ -17,7 +16,6 @@ module.exports = {
     * Serves files in ./public folder.
     * Refresh browser automatically when your bundle changes.
     */
-
     devServer: {
         publicPath: '/assets/scripts/',
         contentBase: path.join(__dirname, 'public'),
@@ -25,6 +23,7 @@ module.exports = {
     },
 
     // Custom configuration
+    mode: 'development',
     module: {
         rules: [
             {
