@@ -42,6 +42,7 @@ function preload() {
     game.load.image('background', './assets/images/background.png');
     game.load.image('slime', './assets/images/slime.png');
     game.load.image('ball', './assets/images/ball.png');
+    game.load.physics('physics', './assets/physics.json');
 }
 
 function create() {
@@ -62,6 +63,8 @@ function create() {
     // Add the slime to the world
     slime = game.add.sprite(worldPadding, worldHeight - worldPadding - slimeHeight, 'slime');
     game.physics.box2d.enable(slime);
+    slime.body.clearFixtures();
+    slime.body.loadPolygon('physics', 'slime', slime);
     slime.body.fixedRotation = true;
     slime.body.gravityScale = 320;
     slime.body.linearDamping = 2.5;

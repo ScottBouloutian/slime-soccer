@@ -6,7 +6,8 @@
   "author": "Scott Bouloutian <ScottBouloutian@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "build": "webpack --mode=development"
   },
   "dependencies": {
     "lodash": "^4.17.5",
