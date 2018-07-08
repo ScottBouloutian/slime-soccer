@@ -6,21 +6,16 @@
   "author": "Scott Bouloutian <ScottBouloutian@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server",
-    "build": "webpack --mode=development"
+    "start": "parcel index.html --open",
+    "build": "parcel build index.html"
   },
   "dependencies": {
     "lodash": "^4.17.5",
-    "phaser-ce": "^2.9.2",
-    "socket.io-client": "^2.0.4"
+    "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.39",
-    "@babel/preset-env": "^7.0.0-beta.39",
-    "babel-loader": "8.0.0-beta.0",
-    "expose-loader": "^0.7.4",
-    "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.12",
-    "webpack-dev-server": "^3.1.1"
+    "@babel/core": "^7.0.0-beta.52",
+    "@babel/preset-env": "^7.0.0-beta.52",
+    "parcel-bundler": "^1.9.4"
   }
 }

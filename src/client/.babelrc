@@ -1,0 +1,13 @@
+{
+    "presets": [
+        [
+            "env",
+            {
+                "targets": {
+                    "chrome": 52,
+                    "browsers": ["last 1 version", "not dead", "> 0.2%"]
+                }
+            }
+        ]
+    ]
+}

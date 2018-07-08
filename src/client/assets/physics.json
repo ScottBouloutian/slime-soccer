@@ -1,0 +1,11 @@
+{ 
+    
+    "slime": [
+        
+        {
+            "density": 2, "friction": 0, "bounce": 0, 
+            "filter": { "categoryBits": 1, "maskBits": 65535 },
+            "shape": [   47, 28  ,  8, 28  ,  2, 27  ,  3, 12  ,  16, 3  ,  32, 0  ,  52, 11  ,  56, 25  ]
+        }
+    ]
+}
