@@ -4,6 +4,9 @@ import backgroundUrl from './assets/images/background.png';
 import slimeUrl from './assets/images/slime.png';
 import ballUrl from './assets/images/ball.png';
 import physicsData from './assets/physics.json';
+import whiteUrl from './assets/images/white.png';
+import smokeUrl from './assets/images/smoke-puff.png';
+import Flame from './particles/flame';
 
 const { Phaser } = window;
 
@@ -49,13 +52,19 @@ function preload() {
         .image('background', backgroundUrl.toString())
         .image('slime', slimeUrl.toString())
         .image('ball', ballUrl.toString())
+        .image('white', whiteUrl.toString())
+        .image('smoke', smokeUrl.toString())
         .physics('physics', null, physicsData);
 }
 
 function create() {
+    const manager = game.plugins.add(Phaser.ParticleStorm);
     game.physics.startSystem(Phaser.Physics.BOX2D);
     game.physics.box2d.gravity.y = 1;
     cursors = game.input.keyboard.createCursorKeys();
+
+    // Create particles
+    Flame.create(manager);
 
     // Add the background to the world
     game.world.setBounds(
@@ -68,7 +77,7 @@ function create() {
     game.add.image(-worldPadding, -worldPadding, 'background');
 
     // Add the slime to the world
-    slime = game.add.sprite(worldPadding + 16, worldHeight - worldPadding - slimeHeight - 16, 'slime');
+    slime = game.add.sprite(worldPadding, worldHeight - worldPadding - slimeHeight, 'slime');
     game.physics.box2d.enable(slime);
     slime.body.clearFixtures();
     slime.body.loadPolygon('physics', 'slime', slime);
@@ -82,6 +91,10 @@ function create() {
     ball.body.setCircle(ball.width / 2);
     ball.body.gravityScale = 320;
     ball.body.restitution = 0.85;
+
+    // Add fire to the world
+    const flame = new Flame(manager);
+    flame.start();
 
     if (headless) {
         // Handle direction from client
