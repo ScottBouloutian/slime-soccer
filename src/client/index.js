@@ -6,7 +6,9 @@ import ballUrl from './assets/images/ball.png';
 import physicsData from './assets/physics.json';
 import whiteUrl from './assets/images/white.png';
 import smokeUrl from './assets/images/smoke-puff.png';
-import Flame from './particles/flame';
+import Flame from './particles/Flame';
+import Slime from './bodies/Slime';
+import Ball from './bodies/Ball';
 
 const { Phaser } = window;
 
@@ -16,7 +18,8 @@ const worldPadding = 20;
 const slimeHeight = 28;
 const ballSize = 19;
 const headless = /Puppeteer/.test(window.navigator.userAgent);
-const socket = headless ? io() : io('http://localhost:3000');
+const ioArguments = headless ? [] : ['http://localhost:3000'];
+const socket = io(...ioArguments);
 const renderingMode = Phaser[headless ? 'HEADLESS' : 'AUTO'];
 
 let game = null;
@@ -76,38 +79,26 @@ function create() {
     game.physics.box2d.setBoundsToWorld();
     game.add.image(-worldPadding, -worldPadding, 'background');
 
-    // Add the slime to the world
-    slime = game.add.sprite(worldPadding, worldHeight - worldPadding - slimeHeight, 'slime');
-    game.physics.box2d.enable(slime);
-    slime.body.clearFixtures();
-    slime.body.loadPolygon('physics', 'slime', slime);
-    slime.body.fixedRotation = true;
-    slime.body.gravityScale = 320;
-    slime.body.linearDamping = 2.5;
-
-    // Add the ball to the world
-    const ball = game.add.sprite((worldWidth - ballSize) / 2, (worldHeight - ballSize) / 2, 'ball');
-    game.physics.box2d.enable(ball);
-    ball.body.setCircle(ball.width / 2);
-    ball.body.gravityScale = 320;
-    ball.body.restitution = 0.85;
+    // Add bodies to the world
+    const ball = new Ball(game, (worldWidth - ballSize) / 2, (worldHeight - ballSize) / 2);
+    slime = new Slime(game, worldPadding, worldHeight - worldPadding - slimeHeight);
 
     // Add fire to the world
-    const flame = new Flame(manager);
-    flame.start();
+    // const flame = new Flame(manager);
+    // flame.start();
 
     if (headless) {
         // Handle direction from client
         socket.on('moveSlime', (direction) => {
             switch (direction) {
             case 'up':
-                slime.body.moveUp(275);
+                slime.moveUp();
                 break;
             case 'left':
-                slime.body.moveLeft(160);
+                slime.moveLeft();
                 break;
             case 'right':
-                slime.body.moveRight(160);
+                slime.moveRight();
                 break;
             default:
             }
