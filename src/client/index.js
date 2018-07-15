@@ -36,6 +36,7 @@ function getPhysicsInfo(body) {
             x: body.velocity.x,
             y: body.velocity.y,
         },
+        angularVelocity: body.angularVelocity,
     };
 }
 
@@ -47,6 +48,7 @@ function mapPhysicsInfo(physics) {
             x: physics.velocity.x,
             y: physics.velocity.y,
         },
+        angularVelocity: physics.angularVelocity,
     };
 }
 
