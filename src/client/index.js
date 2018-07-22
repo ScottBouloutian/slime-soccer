@@ -6,9 +6,11 @@ import ballUrl from './assets/images/ball.png';
 import physicsData from './assets/physics.json';
 import whiteUrl from './assets/images/white.png';
 import smokeUrl from './assets/images/smoke-puff.png';
+import goalUrl from './assets/images/goal.png';
 import Flame from './particles/Flame';
-import Slime from './bodies/Slime';
-import Ball from './bodies/Ball';
+import Slime from './sprites/Slime';
+import Ball from './sprites/Ball';
+import Goal from './sprites/Goal';
 
 const { Phaser } = window;
 
@@ -59,6 +61,7 @@ function preload() {
         .image('ball', ballUrl.toString())
         .image('white', whiteUrl.toString())
         .image('smoke', smokeUrl.toString())
+        .image('goal', goalUrl.toString())
         .physics('physics', null, physicsData);
 }
 
@@ -81,9 +84,22 @@ function create() {
     game.physics.box2d.setBoundsToWorld();
     game.add.image(-worldPadding, -worldPadding, 'background');
 
-    // Add bodies to the world
-    const ball = new Ball(game, (worldWidth - ballSize) / 2, (worldHeight - ballSize) / 2);
+    // Add sprites to the world
+    const ball = Ball.create(game, (worldWidth - ballSize) / 2, (worldHeight - ballSize) / 2);
     slime = new Slime(game, worldPadding, worldHeight - worldPadding - slimeHeight);
+    Goal.create(
+        game,
+        -worldPadding / 2,
+        worldHeight - worldPadding - (worldPadding / 2),
+        false,
+    );
+    Goal.create(
+        game,
+        worldWidth - worldPadding - (worldPadding / 2),
+        worldHeight - worldPadding - (worldPadding / 2),
+        true,
+    );
+    game.world.bringToTop(ball);
 
     // Add fire to the world
     // const flame = new Flame(manager);
